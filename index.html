@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Trivia!</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  </head>
+
+
+  <body>
+    <div class="row">
+      <div class="col-12">
+        <h1><span id="question"></span></h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <button type="btn" class="btn btn-primary btn-lg btn-block" name="buttonA" onclick = "checkAnswer(getElementById('buttonA').textContent)"><span id="buttonA"></span></button>
+      </div>
+      <div class="col-6">
+        <button type="btn" class="btn btn-success btn-lg btn-block" name="buttonB" onclick = "checkAnswer(getElementById('buttonB').textContent)"><span id="buttonB"></span></button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <button type="btn" class="btn btn-warning btn-lg btn-block" name="buttonC" onclick = "checkAnswer(getElementById('buttonC').textContent)"><span id="buttonC"></span></button>
+      </div>
+      <div class="col-6">
+        <button type="btn" class="btn btn-danger btn-lg btn-block" name="buttonD" onclick = "checkAnswer(getElementById('buttonD').textContent)"><span id="buttonD"></span></button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <button type="btn" name="button" onclick="getData()">get questions</button>
+        <h1><span id="testAnswer"></span></h1>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script>
+      const otdb= 'https://opentdb.com/api.php?amount=1';
+      var correctAns = "";
+
+      async function getData(){
+        const response = await fetch(otdb);
+        const data = await response.json();
+
+
+        document.getElementById('question').textContent = data.results[0].question.replace(/&quot;/g, '"');
+
+        populateAnswers(data);
+      }
+
+      function populateAnswers(data){
+        var x = Math.floor((Math.random() * 4) + 1);
+        correctAns = data.results[0].correct_answer;
+
+        if(data.results[0].incorrect_answers.length == 1){
+          document.getElementById('buttonA').textContent = "True";
+          document.getElementById('buttonB').textContent = "False";
+          document.getElementById('buttonC').textContent = "";
+          document.getElementById('buttonD').textContent = "";
+          return;
+        }
+
+        switch(x){
+          case 1:
+            document.getElementById('buttonA').textContent = data.results[0].correct_answer;
+            document.getElementById('buttonB').textContent = data.results[0].incorrect_answers[1];
+            document.getElementById('buttonC').textContent = data.results[0].incorrect_answers[0];
+            document.getElementById('buttonD').textContent = data.results[0].incorrect_answers[2];
+            break;
+          case 2:
+            document.getElementById('buttonA').textContent = data.results[0].incorrect_answers[0];
+            document.getElementById('buttonB').textContent = data.results[0].correct_answer;
+            document.getElementById('buttonC').textContent = data.results[0].incorrect_answers[1];
+            document.getElementById('buttonD').textContent = data.results[0].incorrect_answers[2];
+            break;
+          case 3:
+            document.getElementById('buttonA').textContent = data.results[0].incorrect_answers[0];
+            document.getElementById('buttonB').textContent = data.results[0].incorrect_answers[1];
+            document.getElementById('buttonC').textContent = data.results[0].correct_answer;
+            document.getElementById('buttonD').textContent = data.results[0].incorrect_answers[2];
+            break;
+          default:
+            document.getElementById('buttonA').textContent = data.results[0].incorrect_answers[0];
+            document.getElementById('buttonB').textContent = data.results[0].incorrect_answers[1];
+            document.getElementById('buttonC').textContent = data.results[0].incorrect_answers[2];
+            document.getElementById('buttonD').textContent = data.results[0].correct_answer;
+            break;
+        }
+        return;
+
+      }
+
+      function checkAnswer(text){
+        if(text == correctAns){
+          document.getElementById('testAnswer').textContent = "Correct!";
+        } else {
+          document.getElementById('testAnswer').textContent = "incorrect, actual answer is " + correctAns;
+        }
+        getData();
+      }
+
+
+
+
+    </script>
+  </body>
+
+</html>
